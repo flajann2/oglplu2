@@ -85,7 +85,7 @@ struct div_result<unit<D1, S>, unit<D2, S>>
 template <typename U>
 static constexpr inline
 std::enable_if_t<
-	is_unit_v<U>,
+	is_unit<U>::value,
 	lit_result_t<U>
 > operator !(U) noexcept { return {}; }
 
@@ -93,7 +93,7 @@ std::enable_if_t<
 template <typename U1, typename U2>
 static constexpr inline
 std::enable_if_t<
-	is_unit_v<U1> && is_unit_v<U2>,
+	is_unit<U1>::value && is_unit<U2>::value,
 	add_result_t<U1, U2>
 > operator + (U1, U2) noexcept { return {}; }
 
@@ -101,7 +101,7 @@ std::enable_if_t<
 template <typename U1, typename U2>
 static constexpr inline
 std::enable_if_t<
-	is_unit_v<U1> && is_unit_v<U2>,
+	is_unit<U1>::value && is_unit<U2>::value,
 	sub_result_t<U1, U2>
 > operator - (U1, U2) noexcept { return {}; }
 
@@ -109,7 +109,7 @@ std::enable_if_t<
 template <typename U1, typename U2>
 static constexpr inline
 std::enable_if_t<
-	is_unit_v<U1> && is_unit_v<U2>,
+	is_unit<U1>::value && is_unit<U2>::value,
 	mul_result_t<U1, U2>
 > operator * (U1, U2) noexcept { return {}; }
 
@@ -117,7 +117,7 @@ std::enable_if_t<
 template <typename U1, typename U2>
 static constexpr inline
 std::enable_if_t<
-	is_unit_v<U1> && is_unit_v<U2>,
+	is_unit<U1>::value && is_unit<U2>::value,
 	div_result_t<U1, U2>
 > operator / (U1, U2) noexcept { return {}; }
 

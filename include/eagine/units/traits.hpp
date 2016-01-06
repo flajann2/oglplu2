@@ -21,9 +21,6 @@ struct is_dimension
  : std::false_type
 { };
 
-template <typename X>
-constexpr bool is_dimension_v = is_dimension<X>::value;
-
 template <typename H, typename T>
 struct is_dimension<bits::dims<H, T>>
  : std::true_type

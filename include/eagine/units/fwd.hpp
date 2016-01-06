@@ -138,20 +138,11 @@ using dimension_of_t = typename dimension_of<X>::type;
 template <typename X, typename Y>
 struct same_dimension;
 
-template <typename X, typename Y>
-constexpr bool same_dimension_v = same_dimension<X, Y>::value;
-
 template <typename X>
 struct is_unit;
 
-template <typename X>
-constexpr bool is_unit_v = is_unit<X>::value;
-
 template <typename U1, typename U2>
 struct is_convertible;
-
-template <typename U1, typename U2>
-constexpr bool is_convertible_v = is_convertible<U1, U2>::value;
 
 } // namespace units
 } // namespace eagine

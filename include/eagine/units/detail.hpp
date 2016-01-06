@@ -55,9 +55,6 @@ struct collapse_tail<dims<nothing_t, nothing_t>>
 template <typename D, typename Dims>
 struct pow_of_dim;
 
-template <typename D, typename Dims>
-constexpr int pow_of_dim_v = pow_of_dim<D, Dims>::value;
-
 template <typename D>
 struct pow_of_dim<D, nothing_t>
  : int_constant<0>
@@ -84,7 +81,7 @@ static constexpr inline
 int get_pow_of_dim(base::dimension<D>, dims<H, T>)
 noexcept
 {
-	return pow_of_dim_v<D, dims<H, T>>;
+	return pow_of_dim<D, dims<H, T>>::value;
 }
 
 // apply
@@ -170,7 +167,7 @@ struct dim_add<
 	dims<dim_pow<Dim1, Pow1>, Tail1>, 
 	dims<dim_pow<Dim2, Pow2>, Tail2> 
 > : std::conditional_t<
-	(base::dim_num_v<Dim1> < base::dim_num_v<Dim2>),
+	(base::dim_num<Dim1>::value < base::dim_num<Dim2>::value),
 	dims<
 		dim_pow<Dim1, Pow1>,
 		collapse_tail_t<
@@ -257,7 +254,7 @@ struct dim_sub<
 	dims<dim_pow<Dim1, Pow1>, Tail1>, 
 	dims<dim_pow<Dim2, Pow2>, Tail2> 
 > : std::conditional_t<
-	(base::dim_num_v<Dim1> < base::dim_num_v<Dim2>),
+	(base::dim_num<Dim1>::value < base::dim_num<Dim2>::value),
 	dims<
 		dim_pow<Dim1, Pow1>,
 		collapse_tail_t<
@@ -453,8 +450,8 @@ template <
 	unit_scales<uni_sca<U2, S2>, T2>
 >: std::conditional_t<
 	(
-		base::dim_num_v<dimension_of_t<U1>> <
-		base::dim_num_v<dimension_of_t<U2>>
+		base::dim_num<dimension_of_t<U1>>::value <
+		base::dim_num<dimension_of_t<U2>>::value
 	),
 	unit_scales<
 		uni_sca<U1, S1>,

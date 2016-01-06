@@ -67,9 +67,6 @@ struct dim_num<dimension<Dim>>
  : dim_num<Dim>
 { };
 
-template <typename Dimension>
-const int dim_num_v = dim_num<Dimension>::value;
-
 template <> struct dim_num<nothing_t>   : int_constant<0>{ };
 
 template <> struct dim_num<angle>       : int_constant<1>{ };
@@ -92,7 +89,7 @@ static constexpr inline
 int get_number(dimension<Derived>)
 noexcept
 {
-	return dim_num_v<Derived>;
+	return dim_num<Derived>::value;
 }
 
 

@@ -61,7 +61,7 @@ public:
 
 	template <
 		typename UX,
-		typename = std::enable_if_t<units::is_convertible_v<U, UX>>
+		typename = std::enable_if_t<units::is_convertible<U, UX>::value>
 	>
 	constexpr inline
 	auto to(void) const
@@ -129,9 +129,6 @@ struct is_tagged_quantity
 template <typename T>
 using is_tagged_quantity_t = typename is_tagged_quantity<T>::type;
 
-template <typename T>
-constexpr bool is_tagged_quantity_v = is_tagged_quantity<T>::value;
-
 template <typename T, typename U>
 struct is_tagged_quantity<tagged_quantity<T, U>>
  : std::true_type
@@ -145,9 +142,6 @@ struct is_convertible_quantity
 
 template <typename Q, typename U>
 using is_convertible_quantity_t = typename is_convertible_quantity<Q, U>::type;
-
-template <typename Q, typename U>
-constexpr bool is_convertible_quantity_v = is_convertible_quantity<Q, U>::value;
 
 template <typename T, typename QU, typename U>
 struct is_convertible_quantity<tagged_quantity<T, QU>, U>
@@ -167,9 +161,9 @@ template <
 	typename T,
 	typename U,
 	typename = std::enable_if_t<
-		!is_tagged_quantity_v<T> &&
-		!units::is_unit_v<T> &&
-		units::is_unit_v<U>
+		!is_tagged_quantity<T>::value &&
+		!units::is_unit<T>::value &&
+		units::is_unit<U>::value
 	>
 >
 static constexpr inline
@@ -194,7 +188,7 @@ T value(const tagged_quantity<T, U>& q)
 
 template <typename T1, typename U1, typename T2, typename U2>
 constexpr inline
-std::enable_if_t<units::is_convertible_v<U2, U1>, bool>
+std::enable_if_t<units::is_convertible<U2, U1>::value, bool>
 operator == (
 	const tagged_quantity<T1, U1>& a,
 	const tagged_quantity<T2, U2>& b
@@ -205,7 +199,7 @@ operator == (
 
 template <typename T1, typename U1, typename T2, typename U2>
 constexpr inline
-std::enable_if_t<units::is_convertible_v<U2, U1>, bool>
+std::enable_if_t<units::is_convertible<U2, U1>::value, bool>
 operator != (
 	const tagged_quantity<T1, U1>& a,
 	const tagged_quantity<T2, U2>& b
@@ -216,7 +210,7 @@ operator != (
 
 template <typename T1, typename U1, typename T2, typename U2>
 constexpr inline
-std::enable_if_t<units::is_convertible_v<U2, U1>, bool>
+std::enable_if_t<units::is_convertible<U2, U1>::value, bool>
 operator <  (
 	const tagged_quantity<T1, U1>& a,
 	const tagged_quantity<T2, U2>& b
@@ -227,7 +221,7 @@ operator <  (
 
 template <typename T1, typename U1, typename T2, typename U2>
 constexpr inline
-std::enable_if_t<units::is_convertible_v<U2, U1>, bool>
+std::enable_if_t<units::is_convertible<U2, U1>::value, bool>
 operator <= (
 	const tagged_quantity<T1, U1>& a,
 	const tagged_quantity<T2, U2>& b
@@ -238,7 +232,7 @@ operator <= (
 
 template <typename T1, typename U1, typename T2, typename U2>
 constexpr inline
-std::enable_if_t<units::is_convertible_v<U2, U1>, bool>
+std::enable_if_t<units::is_convertible<U2, U1>::value, bool>
 operator >  (
 	const tagged_quantity<T1, U1>& a,
 	const tagged_quantity<T2, U2>& b
@@ -249,7 +243,7 @@ operator >  (
 
 template <typename T1, typename U1, typename T2, typename U2>
 constexpr inline
-std::enable_if_t<units::is_convertible_v<U2, U1>, bool>
+std::enable_if_t<units::is_convertible<U2, U1>::value, bool>
 operator >= (
 	const tagged_quantity<T1, U1>& a,
 	const tagged_quantity<T2, U2>& b
@@ -321,8 +315,8 @@ template <
 	typename U,
 	typename T2,
 	typename = std::enable_if_t<
-		!units::is_unit_v<T2> &&
-		!is_tagged_quantity_v<T2>
+		!units::is_unit<T2>::value &&
+		!is_tagged_quantity<T2>::value
 	>
 >
 constexpr inline
@@ -342,7 +336,7 @@ template <
 	typename T1,
 	typename U1,
 	typename U2,
-	typename = std::enable_if_t<units::is_unit_v<U2>>
+	typename = std::enable_if_t<units::is_unit<U2>::value>
 >
 constexpr inline
 auto operator * (const tagged_quantity<T1, U1>& a, U2)
@@ -370,7 +364,7 @@ template <
 	typename T1,
 	typename U,
 	typename T2,
-	typename = std::enable_if_t<!units::is_unit_v<T2>>
+	typename = std::enable_if_t<!units::is_unit<T2>::value>
 >
 constexpr inline
 auto operator / (const tagged_quantity<T1, U>& a, const T2& c)
@@ -382,7 +376,7 @@ template <
 	typename T1,
 	typename U1,
 	typename U2,
-	typename = std::enable_if_t<units::is_unit_v<U2>>
+	typename = std::enable_if_t<units::is_unit<U2>::value>
 >
 constexpr inline
 auto operator / (const tagged_quantity<T1, U1>& a, U2)

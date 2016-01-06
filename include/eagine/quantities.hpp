@@ -45,7 +45,7 @@ noexcept
 template <
 	typename Qty,
 	typename = std::enable_if_t<
-		is_convertible_quantity_v<Qty, units::radian>
+		is_convertible_quantity<Qty, units::radian>::value
 	>
 >
 static constexpr inline
@@ -58,7 +58,7 @@ auto sin(const Qty& qty)
 template <
 	typename Qty,
 	typename = std::enable_if_t<
-		is_convertible_quantity_v<Qty, units::radian>
+		is_convertible_quantity<Qty, units::radian>::value
 	>
 >
 static constexpr inline
@@ -71,7 +71,7 @@ auto cos(const Qty& qty)
 template <
 	typename Qty,
 	typename = std::enable_if_t<
-		is_convertible_quantity_v<Qty, units::radian>
+		is_convertible_quantity<Qty, units::radian>::value
 	>
 >
 static constexpr inline
