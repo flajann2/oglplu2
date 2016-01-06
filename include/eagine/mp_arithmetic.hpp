@@ -49,7 +49,7 @@ using mp_negate_t = typename mp_negate<T1>::type;
 template <typename Int, Int I1>
 struct mp_negate<
 	std::integral_constant<Int, I1>
->: std::integral_constant<Int,-I1>
+>: std::integral_constant<Int,Int(0)-I1>
 { };
 
 } // namespace eagine
