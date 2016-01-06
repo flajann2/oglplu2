@@ -77,7 +77,7 @@ struct constant
 			return v/float(I);
 		}
 	};
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 template <int Num, int Den>
@@ -103,7 +103,7 @@ struct rational
 			return (v*Den)/float(Num);
 		}
 	};
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 template <int X, int Y>
@@ -132,7 +132,7 @@ struct power
 		}
 	};
 
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 template <typename S>
@@ -159,7 +159,7 @@ struct inverted
 		}
 	};
 
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 template <typename S1, typename S2>
@@ -186,7 +186,7 @@ struct multiplied
 		}
 	};
 
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 template <typename S1, typename S2>
@@ -213,7 +213,7 @@ struct divided
 		}
 	};
 
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 template <typename S1, typename S2>
@@ -223,7 +223,7 @@ struct recombined
 
 	typedef typename multiplied<S1, S2>::_impl _impl;
 
-	static constexpr const _impl value = {};
+	static const _impl value;
 };
 
 // nano
@@ -467,7 +467,7 @@ struct pi
 #endif
 		}
 	};
-	static constexpr _impl value = {};
+	static const _impl value;
 };
 
 template <>
