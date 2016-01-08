@@ -1,5 +1,5 @@
 /**
- *  file. oglplus/glfw3_main.cpp
+ *  file. oglplus/example/main_glfw3.cpp
  *
  *  Copyright Matus Chochlik.
  *  Distributed under the Boost Software License, Version 1.0.
@@ -7,8 +7,8 @@
  *   http://www.boost.org/LICENSE_1_0.txt
  */
 #include <oglplus/gl_fixed.hpp>
-#include "example/wrapper.hpp"
-#include "example/state.hpp"
+#include "wrapper.hpp"
+#include "state.hpp"
 
 #include <eagine/scope_exit.hpp>
 #include <eagine/program_args.hpp>
@@ -136,6 +136,11 @@ int example_main(
 		{
 			glfwMakeContextCurrent(window);
 			glfwSetWindowTitle(window, "OGLplus example");
+			glfwSetWindowPos(
+				window,
+				params.window_x_pos(),
+				params.window_y_pos()
+			);
 			glfwSetScrollCallback(window, example_scroll_callback);
 
 			oglplus::api_initializer gl_api_init;

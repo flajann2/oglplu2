@@ -1,5 +1,5 @@
 /**
- *  .file oglplus/example/params.cpp
+ *  .file oglplus/example/params.hpp
  *
  *  Copyright Matus Chochlik.
  *  Distributed under the Boost Software License, Version 1.0.
@@ -26,6 +26,9 @@ private:
 	float _screenshot_time;
 	float _fixed_fps;
 
+	int _x_pos;
+	int _y_pos;
+
 	int _x_tiles;
 	int _y_tiles;
 
@@ -37,23 +40,11 @@ private:
 	int _stencil_bits;
 
 	bool _compat_ctxt;
+	bool _debug_ctxt;
 	bool _auto_tiles;
 public:
 	example_params(void)
-	noexcept
-	 : _rand_seed(0)
-	 , _screenshot_time(3)
-	 , _fixed_fps(30)
-	 , _x_tiles(1)
-	 , _y_tiles(1)
-	 , _samples(4)
-	 , _color_bits(8)
-	 , _alpha_bits(0)
-	 , _depth_bits(24)
-	 , _stencil_bits(0)
-	 , _compat_ctxt(false)
-	 , _auto_tiles(true)
-	{ }
+	noexcept;
 
 	example_params& screenshot_path(cstr_ref path)
 	{
@@ -123,6 +114,32 @@ public:
 		return 1.0f/_fixed_fps;
 	}
 
+	example_params& window_x_pos(int pos)
+	noexcept
+	{
+		_x_pos = pos;
+		return *this;
+	}
+
+	int window_x_pos(void) const
+	noexcept
+	{
+		return _x_pos;
+	}
+
+	example_params& window_y_pos(int pos)
+	noexcept
+	{
+		_y_pos = pos;
+		return *this;
+	}
+
+	int window_y_pos(void) const
+	noexcept
+	{
+		return _y_pos;
+	}
+
 	example_params& rand_seed(unsigned seed)
 	noexcept
 	{
@@ -147,6 +164,19 @@ public:
 	noexcept
 	{
 		return _compat_ctxt;
+	}
+
+	example_params& debugging_context(bool v)
+	noexcept
+	{
+		_debug_ctxt = v;
+		return *this;
+	}
+
+	bool debugging_context(void) const
+	noexcept
+	{
+		return _debug_ctxt;
 	}
 
 	example_params& auto_tiles(bool v)
@@ -225,11 +255,10 @@ public:
 		return _color_bits;
 	}
 
-	example_params& alpha_bits(int n)
+	example_params& with_alpha(bool v)
 	noexcept
 	{
-		assert(n >= 0);
-		_alpha_bits = n;
+		_alpha_bits = v?8:0;
 		return *this;
 	}
 
@@ -239,11 +268,10 @@ public:
 		return _alpha_bits;
 	}
 
-	example_params& depth_bits(int n)
+	example_params& depth_buffer(bool v)
 	noexcept
 	{
-		assert(n >= 0);
-		_depth_bits = n;
+		_depth_bits = v?24:0;
 		return *this;
 	}
 
@@ -253,11 +281,16 @@ public:
 		return _depth_bits;
 	}
 
-	example_params& stencil_bits(int n)
+	bool depth_buffer(void) const
 	noexcept
 	{
-		assert(n >= 0);
-		_stencil_bits = n;
+		return _depth_bits > 0;
+	}
+
+	example_params& stencil_buffer(bool v)
+	noexcept
+	{
+		_stencil_bits = v?8:0;
 		return *this;
 	}
 
@@ -265,6 +298,12 @@ public:
 	noexcept
 	{
 		return _stencil_bits;
+	}
+
+	bool stencil_buffer(void) const
+	noexcept
+	{
+		return _stencil_bits > 0;
 	}
 };
 

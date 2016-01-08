@@ -5,13 +5,7 @@
 #
 cmake_minimum_required(VERSION 2.8)
 
-# TODO
-if(GLFW3_FOUND)
-	set(OGLPLUS_EXAMPLE_HARNESS "glfw3")
-else()
-	set(OGLPLUS_EXAMPLE_HARNESS "glfw")
-endif()
-#string(TOLOWER ${OGLPLUS_GL_INIT_LIB} OGLPLUS_EXAMPLE_HARNESS)
+string(TOLOWER ${OGLPLUS_GL_INIT_LIB} OGLPLUS_EXAMPLE_HARNESS)
 
 # check the harness dependencies and requirements
 set(HARNESS_CAN_BE_BUILT true)
@@ -27,27 +21,32 @@ if(NOT ${HARNESS_CAN_BE_BUILT})
 	return()
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/utils)
-
 # add a target for the examples
 add_custom_target(oglplus-examples ALL)
 set_property(TARGET oglplus-examples PROPERTY FOLDER "Example/OGLplus")
 
 unset(OGLPLUS_EXAMPLE_HARNESS_ADDITIONAL_SOURCES)
 
-if("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "qt4gl")
+
+if("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "glx")
+	include_directories(${PROJECT_SOURCE_DIR}/source/utils)
+
+elseif("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "egl")
+	target_link_libraries(oglplus_example_harness eglplus)
+
+elseif("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "qt4gl")
 	qt4_wrap_cpp(
 		OGLPLUS_EXAMPLE_HARNESS_ADDITIONAL_SOURCES
-		"${CMAKE_CURRENT_SOURCE_DIR}/main_${OGLPLUS_EXAMPLE_HARNESS}.hpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/example/main_${OGLPLUS_EXAMPLE_HARNESS}.hpp"
 	)
 elseif("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "qt5gl")
 	qt5_generate_moc(
-		"${CMAKE_CURRENT_SOURCE_DIR}/main_${OGLPLUS_EXAMPLE_HARNESS}.hpp"
-		"${CMAKE_CURRENT_BINARY_DIR}/main_${OGLPLUS_EXAMPLE_HARNESS}-moc.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/example/main_${OGLPLUS_EXAMPLE_HARNESS}.hpp"
+		"${CMAKE_CURRENT_BINARY_DIR}/example/main_${OGLPLUS_EXAMPLE_HARNESS}-moc.cpp"
 	)
 	set(
 		OGLPLUS_EXAMPLE_HARNESS_ADDITIONAL_SOURCES
-		"${CMAKE_CURRENT_BINARY_DIR}/main_${OGLPLUS_EXAMPLE_HARNESS}-moc.cpp"
+		"${CMAKE_CURRENT_BINARY_DIR}/example/main_${OGLPLUS_EXAMPLE_HARNESS}-moc.cpp"
 	)
 endif()
 
@@ -58,8 +57,9 @@ if(OGLPLUS_EXAMPLE_HARNESS_ADDITIONAL_SOURCES)
 		EXCLUDE_FROM_ALL
 		"${CMAKE_CURRENT_SOURCE_DIR}/example/main.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/example/wrapper.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/example/params.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/example/state_view.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/main_${OGLPLUS_EXAMPLE_HARNESS}.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/example/main_${OGLPLUS_EXAMPLE_HARNESS}.cpp"
 		"${OGLPLUS_EXAMPLE_HARNESS_ADDITIONAL_SOURCES}"
 	)
 else()
@@ -68,8 +68,9 @@ else()
 		EXCLUDE_FROM_ALL
 		"${CMAKE_CURRENT_SOURCE_DIR}/example/main.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/example/wrapper.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/example/params.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/example/state_view.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/main_${OGLPLUS_EXAMPLE_HARNESS}.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/example/main_${OGLPLUS_EXAMPLE_HARNESS}.cpp"
 	)
 endif()
 # TODO
@@ -81,12 +82,6 @@ add_all_dependencies(main_${OGLPLUS_EXAMPLE_HARNESS} oglplus_example_harness)
 #add_oglplus_lib_dependencies(oglplus_example_harness)
 # set the solution folder
 set_property(TARGET oglplus_example_harness PROPERTY FOLDER "Example/OGLplus")
-
-if("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "glx")
-	target_link_libraries(oglplus_example_harness pthread)
-elseif("${OGLPLUS_EXAMPLE_HARNESS}" STREQUAL "egl")
-	target_link_libraries(oglplus_example_harness eglplus)
-endif()
 
 # helper function used in the directories containing examples
 function(add_examples EXAMPLE_PATTERN PARENT_TARGET COMMON_LIBS)

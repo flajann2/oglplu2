@@ -1,5 +1,5 @@
 /**
- *  file. oglplus/glfw_main.cpp
+ *  file. oglplus/example/main_glfw.cpp
  *
  *  Copyright Matus Chochlik.
  *  Distributed under the Boost Software License, Version 1.0.
@@ -7,8 +7,8 @@
  *   http://www.boost.org/LICENSE_1_0.txt
  */
 #include <oglplus/gl_fixed.hpp>
-#include "example/wrapper.hpp"
-#include "example/state.hpp"
+#include "wrapper.hpp"
+#include "state.hpp"
 
 #include <eagine/scope_exit.hpp>
 #include <eagine/program_args.hpp>
@@ -109,6 +109,10 @@ int example_main(
 		else
 		{
 			glfwSetWindowTitle("OGLplus example");
+			glfwSetWindowPos(
+				params.window_x_pos(),
+				params.window_y_pos()
+			);
 
 			oglplus::api_initializer gl_api_init;
 
