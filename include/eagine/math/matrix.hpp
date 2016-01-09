@@ -677,8 +677,8 @@ template <
 		is_matrix_constructor<MC1>::value &&
 		is_matrix_constructor<MC2>::value &&
 		are_multiplicable<
-			constructed_matrix_t<MC1>,
-			constructed_matrix_t<MC2>
+			typename constructed_matrix<MC1>::type,
+			typename constructed_matrix<MC2>::type
 		>::value
 	>
 >

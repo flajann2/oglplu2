@@ -194,14 +194,14 @@ struct vector
 		return a;
 	}
 
-	friend constexpr
+	friend
 	vector operator - (_cpT a)
 	noexcept
 	{
 		return vector{-a._v};
 	}
 
-	friend constexpr
+	friend
 	vector operator + (_cpT a, _cpT b)
 	noexcept
 	{
@@ -215,7 +215,7 @@ struct vector
 		return *this;
 	}
 
-	friend constexpr
+	friend
 	vector operator - (_cpT a, _cpT b)
 	noexcept
 	{
