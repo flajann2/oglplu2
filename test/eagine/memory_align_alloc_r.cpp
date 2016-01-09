@@ -35,7 +35,8 @@ void eagine_test_memory_align_alloc_T(std::size_t n)
 		memory::stack_aligned_byte_allocator<>(blk1, 1),
 		memory::stack_aligned_byte_allocator<>(blk2, 2),
 		memory::stack_aligned_byte_allocator<>(blk4, 4),
-		memory::stack_aligned_byte_allocator<>(blk8, 8)
+		memory::stack_aligned_byte_allocator<>(blk8, 8),
+		memory::default_byte_allocator()
 	);
 
 	const std::size_t ao = alignof(T);
