@@ -14,8 +14,6 @@
 #include <eagine/random_bytes.hpp>
 
 #include "example.hpp"
-#include <iostream>
-#include <random>
 #include <vector>
 
 namespace oglplus {
@@ -51,6 +49,7 @@ public:
 		"}\n"
 		));
 		vs.compile();
+		vs.report_compile_error();
 
 		shader fs(GL.fragment_shader);
 		fs.source(glsl_literal(
@@ -114,10 +113,12 @@ public:
 		"}\n"
 		));
 		fs.compile();
+		fs.report_compile_error();
 
 		attach(vs);
 		attach(fs);
 		link();
+		report_link_error();
 
 		gl.use(*this);
 
@@ -316,7 +317,11 @@ public:
 };
 
 std::unique_ptr<example>
-make_example(const example_params&, const example_state_view&)
+make_example(
+	const example_args&,
+	const example_params&,
+	const example_state_view&
+)
 {
 	return std::unique_ptr<example>(new example_mandelbrot());
 }
@@ -327,5 +332,7 @@ void adjust_params(example_params& params)
 	params.depth_buffer(false);
 	params.stencil_buffer(false);
 }
+
+bool is_example_param(const example_arg&) { return false; }
 
 } // namespace oglplus

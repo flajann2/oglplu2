@@ -21,6 +21,7 @@ class example_params
 private:
 	unsigned _rand_seed;
 
+	cstr_ref _exe_path;
 	cstr_ref _framedump_prefix;
 	cstr_ref _screenshot_path;
 	float _screenshot_time;
@@ -42,13 +43,26 @@ private:
 	bool _compat_ctxt;
 	bool _debug_ctxt;
 	bool _auto_tiles;
+	bool _demo_mode;
 public:
 	example_params(void)
 	noexcept;
 
-	example_params& screenshot_path(cstr_ref path)
+	example_params& executable_path(valid_if_not_empty<cstr_ref> path)
 	{
-		_screenshot_path = path;
+		_exe_path = path.value();
+		return *this;
+	}
+
+	cstr_ref executable_path(void) const
+	noexcept
+	{
+		return _exe_path;
+	}
+
+	example_params& screenshot_path(valid_if_not_empty<cstr_ref> path)
+	{
+		_screenshot_path = path.value();
 		return *this;
 	}
 
@@ -76,9 +90,9 @@ public:
 		return seconds_(_screenshot_time);
 	}
 
-	example_params& framedump_prefix(cstr_ref prefix)
+	example_params& framedump_prefix(valid_if_not_empty<cstr_ref> prefix)
 	{
-		_framedump_prefix = prefix;
+		_framedump_prefix = prefix.value();
 		return *this;
 	}
 
@@ -100,11 +114,10 @@ public:
 		return  doing_screenshot() || doing_framedump();
 	}
 
-	example_params& fixed_fps(float fps)
+	example_params& fixed_fps(valid_if_positive<float> fps)
 	noexcept
 	{
-		assert(fps > 0);
-		_fixed_fps = fps;
+		_fixed_fps = fps.value();
 		return *this;
 	}
 
@@ -192,11 +205,10 @@ public:
 		return _auto_tiles;
 	}
 
-	example_params& x_tiles(int n)
+	example_params& x_tiles(valid_if_positive<int> n)
 	noexcept
 	{
-		assert(n > 0);
-		_x_tiles = n;
+		_x_tiles = n.value();
 		return *this;
 	}
 
@@ -206,11 +218,10 @@ public:
 		return _x_tiles;
 	}
 
-	example_params& y_tiles(int n)
+	example_params& y_tiles(valid_if_positive<int> n)
 	noexcept
 	{
-		assert(n > 0);
-		_y_tiles = n;
+		_y_tiles = n.value();
 		return *this;
 	}
 
@@ -220,11 +231,23 @@ public:
 		return _y_tiles;
 	}
 
-	example_params& samples(int n)
+	example_params& demo_mode(bool v)
 	noexcept
 	{
-		assert(n > 0);
-		_samples = n;
+		_demo_mode = v;
+		return *this;
+	}
+
+	bool demo_mode(void) const
+	noexcept
+	{
+		return _demo_mode;
+	}
+
+	example_params& samples(valid_if_positive<int> n)
+	noexcept
+	{
+		_samples = n.value();
 		return *this;
 	}
 
