@@ -16,6 +16,25 @@
 namespace eagine {
 namespace ranges {
 
+template <typename Range1, typename Range2>
+static inline
+bool equal(const Range1& rng1, const Range2& rng2)
+noexcept
+{
+	return rng1 == rng2;
+}
+
+template <typename Range>
+static inline
+Range subrange(
+	const Range& rng,
+	valid_range_position<Range> bgn,
+	valid_range_position<Range> end
+)
+{
+	return {rng.data()+bgn.value(rng), end.value(rng)-bgn.value(rng)};
+}
+
 template <typename Range>
 static inline
 Range slice(
@@ -32,7 +51,7 @@ Range slice(
 	{
 		len = rng.size()-pos.value();
 	}
-	return {rng.data()+pos.value(), len.value()};
+	return subrange<Range>(rng, pos.value(), pos.value()+len.value());
 }
 
 template <typename Range>
@@ -46,7 +65,7 @@ Range slice(
 	{
 		pos = rng.size();
 	}
-	return {rng.data()+pos.value(), rng.size()-pos.value()};
+	return subrange<Range>(rng, pos.value(), rng.size());
 }
 
 template <typename Range>
@@ -77,14 +96,14 @@ template <typename Range1, typename Range2>
 static inline
 bool starts_with(const Range1& rng, const Range2& with)
 {
-	return head(rng, with.size()) == with;
+	return equal(head(rng, with.size()), with);
 }
 
 template <typename Range1, typename Range2>
 static inline
 bool ends_with(const Range1& rng, const Range2& with)
 {
-	return tail(rng, with.size()) == with;
+	return equal(tail(rng, with.size()), with);
 }
 
 template <typename Range1, typename Range2>
@@ -108,7 +127,7 @@ valid_if<
 
 				while(p != n)
 				{
-					if(slice(where, p, lt) == what)
+					if(equal(slice(where, p, lt), what))
 					{
 						return {p, true};
 					}
@@ -139,9 +158,9 @@ valid_if<
 			{
 				typename Range1::size_type p = ls-lt;
 
-				while(p > 0)
+				while(p >= 0)
 				{
-					if(slice(where, p, lt) == what)
+					if(equal(slice(where, p, lt), what))
 					{
 						return {p, true};
 					}
@@ -156,8 +175,7 @@ valid_if<
 
 template <typename Range1, typename Range2>
 static inline
-typename Range1::size_type
-contains(const Range1& where, const Range2& what)
+bool contains(const Range1& where, const Range2& what)
 {
 	return find_pos(where, what).is_valid();
 }
@@ -166,9 +184,12 @@ template <typename Range1, typename Range2>
 static inline
 Range1 find(const Range1& where, const Range2& what)
 {
-	return slice(where, find_pos(where, what));
+	if(auto pos = find_pos(where, what))
+	{
+		return slice(where, pos.value());
+	}
+	return {};
 }
-
 
 template <typename Range1, typename Range2>
 static inline
@@ -289,6 +310,80 @@ static inline
 std::size_t count_delimited(const Range1& where, const Range2& delim)
 {
 	return for_each_delimited(where, delim, count_t<std::size_t>());
+}
+
+template <
+	typename BackInsertionSequence,
+	typename Range1,
+	typename Range2,
+	typename Transform
+>
+static inline
+BackInsertionSequence& split_into(
+	BackInsertionSequence& dest,
+	const Range1& rng,
+	const Range2& delim,
+	Transform transform
+)
+{
+	for_each_delimited(
+		rng, delim,
+		[&dest, &transform](const auto& x)
+		{
+			dest.push_back(transform(x));
+		}
+	);
+	return dest;
+}
+
+template <
+	typename BackInsertionSequence,
+	typename Range1,
+	typename Range2
+>
+static inline
+BackInsertionSequence& split_into(
+	BackInsertionSequence& dest,
+	const Range1& rng,
+	const Range2& delim
+)
+{
+	return split_into(
+		dest, rng, delim,
+		[](const auto& x)
+		{
+			return typename BackInsertionSequence::value_type(x);
+		}
+	);
+}
+
+template <
+	typename BackInsertionSequence,
+	typename Range1,
+	typename Range2,
+	typename Transform
+>
+static inline
+BackInsertionSequence split(
+	const Range1& rng,
+	const Range2& delim,
+	Transform transform
+)
+{
+	BackInsertionSequence result;
+	return std::move(split_into(result, rng, delim, transform));
+}
+
+template <
+	typename BackInsertionSequence,
+	typename Range1,
+	typename Range2
+>
+static inline
+BackInsertionSequence split(const Range1& rng, const Range2& delim)
+{
+	BackInsertionSequence result;
+	return std::move(split_into(result, rng, delim));
 }
 
 } // namespace ranges
